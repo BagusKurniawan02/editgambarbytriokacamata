@@ -31,6 +31,7 @@ def convert_image_to_bytes(img, format_type):
     return img_byte_arr
 
 # Layout Streamlit
+st.image("https://www.president.ac.id/images/favicon/apple-touch-icon.png", width=100)
 st.title("Image Editor")
 st.write("Upload an image and edit it with rotation, brightness, scaling, and RGB color adjustments.")
 
@@ -51,7 +52,7 @@ if uploaded_file is not None:
         img_rotated = rotate_image(img, rotation_angle)
     else:
         # Automatic rotation
-        rotation_angle = st.selectbox("Select Rotation Angle", [0, 45, 90, 135, 180, 225, 270, 315, 360])
+        rotation_angle = st.selectbox("Select Rotation Angle", [45, 90, 135, 180, 225, 270, 315, 360])
         img_rotated = rotate_image(img, rotation_angle)
 
     st.image(img_rotated, caption="Rotated Image", use_container_width=True)
