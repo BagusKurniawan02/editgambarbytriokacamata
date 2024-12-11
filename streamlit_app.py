@@ -33,7 +33,7 @@ def convert_image_to_bytes(img, format_type):
 # Layout Streamlit
 st.image("https://th.bing.com/th/id/OIP.mJeZat3gDpnceFiSa0Qi5wHaBV?rs=1&pid=ImgDetMain", width=500)
 st.title("Image Editor")
-st.write("by triokacamata")
+st.write("by_triokacamata")
 st.write("Bagus Eric Kurniawan - Muchamad Ilham Bintang - Muhammad Rafi Fauzan")
 
 # Upload gambar
