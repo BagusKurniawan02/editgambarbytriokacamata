@@ -31,27 +31,6 @@ def change_orientation(img, orientation):
         return img.rotate(90, expand=True)
     return img
 
-# Fungsi untuk mengubah komposisi warna gambar dengan 7 warna
-def adjust_color_seven(img, red_factor, green_factor, blue_factor, purple_factor, orange_factor, yellow_factor, indigo_factor):
-    r, g, b = img.split()
-    # Komponen dasar RGB
-    r = r.point(lambda i: i * red_factor)
-    g = g.point(lambda i: i * green_factor)
-    b = b.point(lambda i: i * blue_factor)
-
-    # Komponen warna tambahan (campuran)
-    purple = ImageOps.colorize(r.convert("L"), black="black", white="purple").split()[1].point(lambda i: i * purple_factor)
-    orange = ImageOps.colorize(g.convert("L"), black="black", white="orange").split()[1].point(lambda i: i * orange_factor)
-    yellow = ImageOps.colorize(r.convert("L"), black="black", white="yellow").split()[1].point(lambda i: i * yellow_factor)
-    indigo = ImageOps.colorize(b.convert("L"), black="black", white="indigo").split()[1].point(lambda i: i * indigo_factor)
-
-    # Gabungkan semua komponen warna
-    r = Image.blend(r, purple, purple_factor / 2)
-    g = Image.blend(g, orange, orange_factor / 2)
-    b = Image.blend(b, yellow, yellow_factor / 2)
-
-    return Image.merge("RGB", (r, g, b))
-
 # Fungsi untuk mengonversi gambar ke format byte agar bisa di-download
 def convert_image_to_bytes(img, format_type):
     img_byte_arr = io.BytesIO()
@@ -76,9 +55,22 @@ if uploaded_file is not None:
     img = load_image(uploaded_file)
     st.image(img, caption="Original Image", use_container_width=True)
 
-    # Pengaturan rotasi
-    rotation_angle = st.slider("Rotate Image", 0, 360, 0)
-    img_rotated = rotate_image(img, rotation_angle)
+    # Pengaturan orientasi (ditempatkan di atas)
+    orientation = st.radio("Change Orientation", ("Original", "Portrait", "Landscape"))
+    img_oriented = change_orientation(img, orientation) if orientation != "Original" else img
+    st.image(img_oriented, caption=f"{orientation} Orientation", use_container_width=True)
+
+    # Pengaturan rotasi manual atau otomatis
+    rotation_mode = st.radio("Choose Rotation Mode", ("Manual", "Automatic"))
+    
+    if rotation_mode == "Manual":
+        # Manual rotation: slider from 0 to 360 degrees
+        rotation_angle = st.slider("Rotate Image", 0, 360, 0)
+        img_rotated = rotate_image(img_oriented, rotation_angle)
+    else:
+        # Automatic rotation: predefined options
+        rotation_angle = st.selectbox("Select Rotation Angle", [45, 90, 135, 180, 225, 270, 315, 360])
+        img_rotated = rotate_image(img_oriented, rotation_angle)
 
     # Pengaturan kecerahan
     brightness_factor = st.slider("Adjust Brightness", 0.1, 2.0, 1.0)
@@ -88,21 +80,18 @@ if uploaded_file is not None:
     scale_factor = st.slider("Scale Image", 0.1, 3.0, 1.0)
     img_scaled = scale_image(img_bright, scale_factor)
 
-    # Pengaturan orientasi
-    orientation = st.radio("Change Orientation", ("Original", "Portrait", "Landscape"))
-    img_oriented = change_orientation(img_scaled, orientation) if orientation != "Original" else img_scaled
-
-    # Pengaturan komposisi warna dengan 7 warna
-    st.write("Adjust Color Composition (7 Colors):")
+    # Pengaturan komposisi warna RGB
+    st.write("Adjust RGB Color Composition:")
     red_factor = st.slider("Red Intensity", 0.0, 2.0, 1.0)
     green_factor = st.slider("Green Intensity", 0.0, 2.0, 1.0)
     blue_factor = st.slider("Blue Intensity", 0.0, 2.0, 1.0)
-    purple_factor = st.slider("Purple Intensity", 0.0, 2.0, 0.0)
-    orange_factor = st.slider("Orange Intensity", 0.0, 2.0, 0.0)
-    yellow_factor = st.slider("Yellow Intensity", 0.0, 2.0, 0.0)
-    indigo_factor = st.slider("Indigo Intensity", 0.0, 2.0, 0.0)
-    img_colored = adjust_color_seven(img_oriented, red_factor, green_factor, blue_factor, purple_factor, orange_factor, yellow_factor, indigo_factor)
 
+    r, g, b = img_scaled.split()
+    r = r.point(lambda i: i * red_factor)
+    g = g.point(lambda i: i * green_factor)
+    b = b.point(lambda i: i * blue_factor)
+
+    img_colored = Image.merge("RGB", (r, g, b))
     st.image(img_colored, caption="Edited Image", use_container_width=True)
 
     # Tombol download untuk setiap format
