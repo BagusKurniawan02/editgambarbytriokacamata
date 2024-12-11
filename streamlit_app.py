@@ -31,7 +31,7 @@ def convert_image_to_bytes(img, format_type):
     return img_byte_arr
 
 # Layout Streamlit
-st.image("https://th.bing.com/th/id/OIP.mJeZat3gDpnceFiSa0Qi5wHaBV?rs=1&pid=ImgDetMain", width=100)
+st.image("https://th.bing.com/th/id/OIP.mJeZat3gDpnceFiSa0Qi5wHaBV?rs=1&pid=ImgDetMain", width=300)
 st.title("Image Editor")
 st.write("Upload an image and edit it with rotation, brightness, scaling, and RGB color adjustments.")
 
