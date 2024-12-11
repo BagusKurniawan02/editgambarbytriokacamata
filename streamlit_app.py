@@ -51,13 +51,13 @@ if uploaded_file is not None:
     st.image(img, caption="Original Image", use_container_width=True)
 
     # Pengaturan orientasi
-    st.subheader("Step 1: Change Orientation")
+    st.subheader("Change Orientation")
     orientation = st.radio("Select Orientation", ("Original", "Portrait", "Landscape"))
     img_oriented = change_orientation(img, orientation) if orientation != "Original" else img
     st.image(img_oriented, caption=f"{orientation} Orientation", use_container_width=True)
 
     # Pengaturan rotasi
-    st.subheader("Step 2: Rotate Image")
+    st.subheader("Rotate Image")
     rotation_mode = st.radio("Choose Rotation Mode", ("Manual", "Automatic"))
     if rotation_mode == "Manual":
         # Manual rotation
@@ -71,19 +71,19 @@ if uploaded_file is not None:
     st.image(img_rotated, caption="Rotated Image", use_container_width=True)
 
     # Pengaturan kecerahan
-    st.subheader("Step 3: Adjust Brightness")
+    st.subheader("Adjust Brightness")
     brightness_factor = st.slider("Adjust Brightness (0.1 - 2.0)", 0.1, 2.0, 1.0)
     img_bright = adjust_brightness(img_rotated, brightness_factor)
     st.image(img_bright, caption="Brightness Adjusted Image", use_container_width=True)
 
     # Pengaturan scale
-    st.subheader("Step 4: Scale Image")
+    st.subheader("Scale Image")
     scale_factor = st.slider("Scale Image (0.1 - 3.0)", 0.1, 3.0, 1.0)
     img_scaled = scale_image(img_bright, scale_factor)
     st.image(img_scaled, caption="Scaled Image", use_container_width=True)
 
     # Pengaturan RGB
-    st.subheader("Step 5: Adjust RGB Colors")
+    st.subheader("Adjust RGB Colors")
     red_factor = st.slider("Red Intensity", 0.0, 2.0, 1.0)
     green_factor = st.slider("Green Intensity", 0.0, 2.0, 1.0)
     blue_factor = st.slider("Blue Intensity", 0.0, 2.0, 1.0)
