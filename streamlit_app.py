@@ -23,14 +23,6 @@ def scale_image(img, scale_factor):
     new_height = int(height * scale_factor)
     return img.resize((new_width, new_height))
 
-# Fungsi untuk mengubah orientasi gambar menjadi potret atau lanskap
-def change_orientation(img, orientation):
-    if orientation == "Portrait" and img.width > img.height:
-        return img.rotate(90, expand=True)
-    elif orientation == "Landscape" and img.height > img.width:
-        return img.rotate(90, expand=True)
-    return img
-
 # Fungsi untuk mengonversi gambar ke format byte agar bisa di-download
 def convert_image_to_bytes(img, format_type):
     img_byte_arr = io.BytesIO()
@@ -40,7 +32,7 @@ def convert_image_to_bytes(img, format_type):
 
 # Layout Streamlit
 st.title("Image Editor")
-st.write("Upload an image and edit it with orientation, rotation, brightness, scaling, and RGB color adjustments.")
+st.write("Upload an image and edit it with rotation, brightness, scaling, and RGB color adjustments.")
 
 # Upload gambar
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "png", "jpeg"])
@@ -50,40 +42,34 @@ if uploaded_file is not None:
     img = load_image(uploaded_file)
     st.image(img, caption="Original Image", use_container_width=True)
 
-    # Pengaturan orientasi
-    st.subheader("Change Orientation")
-    orientation = st.radio("Select Orientation", ("Original", "Portrait", "Landscape"))
-    img_oriented = change_orientation(img, orientation) if orientation != "Original" else img
-    st.image(img_oriented, caption=f"{orientation} Orientation", use_container_width=True)
-
     # Pengaturan rotasi
-    st.subheader("Rotate Image")
+    st.subheader("Step 1: Rotate Image")
     rotation_mode = st.radio("Choose Rotation Mode", ("Manual", "Automatic"))
     if rotation_mode == "Manual":
         # Manual rotation
         rotation_angle = st.slider("Rotate Image (0-360 degrees)", 0, 360, 0)
-        img_rotated = rotate_image(img_oriented, rotation_angle)
+        img_rotated = rotate_image(img, rotation_angle)
     else:
         # Automatic rotation
-        rotation_angle = st.selectbox("Select Rotation Angle", [45, 90, 135, 180, 225, 270, 315, 360])
-        img_rotated = rotate_image(img_oriented, rotation_angle)
+        rotation_angle = st.selectbox("Select Rotation Angle", [0, 45, 90, 135, 180, 225, 270, 315, 360])
+        img_rotated = rotate_image(img, rotation_angle)
 
     st.image(img_rotated, caption="Rotated Image", use_container_width=True)
 
     # Pengaturan kecerahan
-    st.subheader("Adjust Brightness")
+    st.subheader("Step 2: Adjust Brightness")
     brightness_factor = st.slider("Adjust Brightness (0.1 - 2.0)", 0.1, 2.0, 1.0)
     img_bright = adjust_brightness(img_rotated, brightness_factor)
     st.image(img_bright, caption="Brightness Adjusted Image", use_container_width=True)
 
     # Pengaturan scale
-    st.subheader("Scale Image")
+    st.subheader("Step 3: Scale Image")
     scale_factor = st.slider("Scale Image (0.1 - 3.0)", 0.1, 3.0, 1.0)
     img_scaled = scale_image(img_bright, scale_factor)
     st.image(img_scaled, caption="Scaled Image", use_container_width=True)
 
     # Pengaturan RGB
-    st.subheader("Adjust RGB Colors")
+    st.subheader("Step 4: Adjust RGB Colors")
     red_factor = st.slider("Red Intensity", 0.0, 2.0, 1.0)
     green_factor = st.slider("Green Intensity", 0.0, 2.0, 1.0)
     blue_factor = st.slider("Blue Intensity", 0.0, 2.0, 1.0)
